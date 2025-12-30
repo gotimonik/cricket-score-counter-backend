@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "builds": [{ "src": "lib/server.js", "use": "@vercel/node" }],
+  "routes": [{ "src": "/(.*)", "dest": "/lib/server.js" }],
+  "functions": {
+    "lib/server.js": {
+      "runtime": "nodejs20.x"
+    }
+  }
+}
