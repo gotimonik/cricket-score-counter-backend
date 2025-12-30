@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node lib/server.js",
     "build": "tsc",
+    "vercel-build": "npm run build",
     "dev": "nodemon --watch src --ext ts,json --exec ts-node src/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
