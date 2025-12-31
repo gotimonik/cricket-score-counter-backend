@@ -5,7 +5,7 @@ import * as http from "http";
 import { SocketIOClientEvents, SocketIOEvents } from "./utils/constant";
 import { Socket, Server as SocketIOServer } from "socket.io";
 
-var temp: { [key: string]: object } = {};
+const gameScores = new Map<string, object>();
 const app = express();
 const server = http.createServer(app);
 const io = new SocketIOServer(server, {
@@ -19,23 +19,32 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 io.on("connection", (socket: Socket) => {
-  console.log("socket.id", socket.id);
-  socket.on(SocketIOClientEvents.ROOM_JOIN, (roomID: string) => {
+  // On game join
+  socket.on(SocketIOClientEvents.GAME_JOIN, (roomID: string) => {
     socket.join(roomID);
-    if (temp[roomID]) {
+    if (gameScores.has(roomID)) {
       socket.emit(
         SocketIOEvents.GAME_SCORE_UPDATED,
-        JSON.stringify(temp[roomID])
+        JSON.stringify(gameScores.get(roomID))
       );
     }
   });
 
+  // On game end
+  socket.on(SocketIOClientEvents.GAME_END, (roomID: string) => {
+    socket.leave(roomID);
+    if (gameScores.has(roomID)) {
+      gameScores.delete(roomID);
+    }
+  });
+
+  // On game score update
   socket.on(
     SocketIOClientEvents.GAME_SCORE_UPDATE,
     (data: { gameId: string }) => {
       const { gameId } = data;
       if (gameId) {
-        temp[gameId] = data;
+        gameScores.set(gameId, data);
         io.to(gameId).emit(
           SocketIOEvents.GAME_SCORE_UPDATED,
           JSON.stringify(data)

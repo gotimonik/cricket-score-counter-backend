@@ -7,7 +7,7 @@ export const SocketIOEvents = {
   GAME_SCORE_UPDATED: "GAME_SCORE_UPDATED",
 };
 export const SocketIOClientEvents = {
-  GAME_START: "GAME_START",
+  GAME_JOIN: "GAME_JOIN",
+  GAME_END: "GAME_END",
   GAME_SCORE_UPDATE: "GAME_SCORE_UPDATE",
-  ROOM_JOIN: "ROOM_JOIN",
 };
